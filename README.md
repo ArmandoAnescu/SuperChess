@@ -1,0 +1,2 @@
+# SuperChess
+Gioco di scacchi
