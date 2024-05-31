@@ -80,6 +80,10 @@ table
     border-radius: 10px;
     padding: 2px;
 }
+th
+{
+    background-color: gray;
+}
 p
 {
     height: auto;
