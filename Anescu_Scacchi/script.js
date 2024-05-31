@@ -80,8 +80,9 @@ function drop(ev) {
     let destinazioneId = destinazione.id;
     if (ControlloCattura(destinazione, pezzo) && MossaLegale(destinazioneId, pezzo)) {
         destinazione.appendChild(pezzo);
+        turnoBianco = !turnoBianco;
     }
-    turnoBianco = !turnoBianco;
+    
     AggiornaPunteggio();
 }
 function ControlloCattura(ev, pezzo) {
