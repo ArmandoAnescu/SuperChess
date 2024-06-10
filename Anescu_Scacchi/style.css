@@ -57,6 +57,11 @@ a percentage of the width of the view port of the screen
     background-color: rgba(233, 222, 208, 0.822);
     color: black;
 }
+.mossa
+{
+    background-color: rgb(180, 180, 21);
+    color: black;
+}
 .Pezzo
 {
     background-color: transparent;
@@ -109,8 +114,8 @@ tr,td
 @media (min-width:600px) {/*serve a contgrollare width e height di un dispositivo/schermo l'orinetamento e la risoluzione*/
     .Scacchiera
     {
-        width: 650px;
-        height: 650px;
+        width: 800px;
+        height: 800px;
     }
     
 }

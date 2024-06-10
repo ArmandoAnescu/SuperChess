@@ -32,7 +32,7 @@ function Spostamento() {
         let colonna = String.fromCharCode(97 + (i % 8));
         let casella = caselle[i];
         casella.id = colonna + riga;
-        console.log(casella.id);
+        //console.log(casella.id);
     }
 }
 function SpostamentoPezzi() {
@@ -80,9 +80,10 @@ function drop(ev) {
     let destinazioneId = destinazione.id;
     if (ControlloCattura(destinazione, pezzo) && MossaLegale(destinazioneId, pezzo)) {
         destinazione.appendChild(pezzo);
+        pezzo.id= pezzo.className.split(" ")[1] + " " + pezzo.parentElement.id;
         turnoBianco = !turnoBianco;
+        rimuoviMosse();
     }
-    
     AggiornaPunteggio();
 }
 function ControlloCattura(ev, pezzo) {
@@ -116,19 +117,34 @@ function MossaLegale(destinazioneId, pezzo) {
     let colonna = origine.charAt(0);
     let riga = origine.charAt(1);
     if (pezzo.classList.contains("Pawn")) {
+        let id=pezzo.id.split(" ")[1];
         let colonna = origine.charAt(0);
         let riga = origine.charAt(1);
-        if (pezzo.classList.contains("Bianco")) {
-            riga++;
-
-        } else {
-            riga--;
+        let posIniziale=false;
+        let doppioSalto= new  Array();
+        var posBianca,posNera;
+        for(let i=97;i<=104;i++){
+            posBianca=String.fromCharCode(i)+"2";
+            posNera=String.fromCharCode(i)+"7";
+            if(posBianca==id||posNera==id){
+                posIniziale=true;
+            }
         }
+        console.log(posIniziale);
+        riga=aumentaRiduciPawn(pezzo,riga);
         let posizione = colonna + riga;
+        aggiungiMosse(mossePossibili);
+        riga=aumentaRiduciPawn(pezzo,riga);
+        pos=colonna+riga;
         console.log(posizione);
+        console.log(pos);
         if (destinazioneId == posizione) {
             return true;
-        } else {
+        } else if(posIniziale){
+            if(destinazioneId==pos){
+                return true;
+            }
+        } else{
             return false;
         }
     } else if (pezzo.classList.contains("King")) {
@@ -144,8 +160,10 @@ function MossaLegale(destinazioneId, pezzo) {
         possibiliMosse[5] = String.fromCharCode((colonna.charCodeAt(0) - 1)) + (nuovaRiga = riga + 1);
         possibiliMosse[6] = String.fromCharCode((colonna.charCodeAt(0) - 1)) + (nuovaRiga = riga - 1);
         possibiliMosse[7] = String.fromCharCode((colonna.charCodeAt(0) + 1)) + (nuovaRiga = riga - 1);
+        aggiungiMosse(mossePossibili);
         for (let i = 0; i < possibiliMosse.length; i++) {
             if (possibiliMosse[i] == destinazioneId) {
+
                 return true;
             }
         }
@@ -166,7 +184,7 @@ function MossaLegale(destinazioneId, pezzo) {
         nuovaRiga = riga - 2;
         possibiliMosse[5] = String.fromCharCode((colonna.charCodeAt(0) + 1)) + nuovaRiga;
         possibiliMosse[6] = String.fromCharCode((colonna.charCodeAt(0) - 1)) + nuovaRiga;
-
+        aggiungiMosse(mossePossibili);
         for (let i = 0; i < possibiliMosse.length; i++) {
             if (possibiliMosse[i] == destinazioneId) {
                 return true;
@@ -185,7 +203,7 @@ function MossaLegale(destinazioneId, pezzo) {
             mossePossibili[i] = colonna + (nuovaRiga = riga - i);
         }
         let k = mossePossibili.length - 1;
-        for (let i = colonna.charCodeAt(0); i <= 194; i++) {
+        for (let i = colonna.charCodeAt(0); i <= 104; i++) {
             mossePossibili[k] = String.fromCharCode(i) + riga;
             k++;
         }
@@ -194,6 +212,7 @@ function MossaLegale(destinazioneId, pezzo) {
             mossePossibili[k] = String.fromCharCode(i) + riga;
             k++
         }
+        aggiungiMosse(mossePossibili);
         for (let i = 0; i < mossePossibili.length; i++) {
             if (destinazioneId == mossePossibili[i]) {
                 return true
@@ -222,6 +241,7 @@ function MossaLegale(destinazioneId, pezzo) {
         for (let i = 0; i < 8; i++) {
             mossePossibili[i+24] = String.fromCharCode(colonnaNuova.charCodeAt(0)+(-1-i)) + (nuovaRiga+(1+i));
         }
+        aggiungiMosse(mossePossibili);
         console.log(mossePossibili);
         for (let i = 0; i < mossePossibili.length; i++) {
             if (mossePossibili[i] == destinazioneId) {
@@ -276,6 +296,7 @@ function MossaLegale(destinazioneId, pezzo) {
             k++;
         }
         console.log(mossePossibili);
+        aggiungiMosse(mossePossibili);
         for (let i = 0; i < mossePossibili.length; i++) {
             if (mossePossibili[i] == destinazioneId) {
                 return true;
@@ -287,6 +308,30 @@ function MossaLegale(destinazioneId, pezzo) {
         return true;
     }
 }
+function aumentaRiduciPawn(pezzo,riga){
+    if (pezzo.classList.contains("Bianco")) {
+        riga++;
+
+    } else {
+        riga--;
+    }
+    return riga;
+}
+function aggiungiMosse(mossePossibili){
+    for(let i=0;i<caselle.length;i++){
+        if(mossePossibili[i]==caselle[i].id){
+            caselle[i].classList.add("mossa");
+        }
+    }
+}
+function rimuoviMosse(){
+    for(let i=0;i<caselle.length;i++){
+        if(caselle[i].classList.contains("mossa")){
+            caselle[i].classList.remove("mossa");
+        }
+    }
+}
+
 /*
 gli otto pedoni si muovono solo in avanti e mangiano in obliquo;
 le torri vanno in orizzontale o in verticale;
